@@ -466,7 +466,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_const_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils/const.js */ "./src/utils/const.js");
 /* harmony import */ var _utils_film_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/film.js */ "./src/utils/film.js");
 /* harmony import */ var _utils_utils_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/utils.js */ "./src/utils/utils.js");
-/* harmony import */ var _utils_render_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../utils/render.js */ "./src/utils/render.js");
+/* harmony import */ var _view_films_list_extra_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../view/films-list-extra.js */ "./src/view/films-list-extra.js");
+/* harmony import */ var _utils_render_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../utils/render.js */ "./src/utils/render.js");
 
 
 
@@ -477,7 +478,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// import FilmsListExtra from "../view/films-list-extra.js";
+
 
 
 
@@ -488,6 +489,7 @@ class MovieList {
     this._renderedFilmCount = _utils_const_js__WEBPACK_IMPORTED_MODULE_7__["FILM_COUNT_PER_STEP"];
     this._currentSortType = _utils_const_js__WEBPACK_IMPORTED_MODULE_7__["SortType"].DEFAULT;
     this._filmCardPresenter = {};
+    this._filmCardPresenterExtra = {};
 
     this._mainFilmsSectionComponent = new _view_main_films_section_js__WEBPACK_IMPORTED_MODULE_1__["default"]();
     this._mainSortingFilterComponent = new _view_main_sorting_filter_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
@@ -508,11 +510,12 @@ class MovieList {
 
     this._renderSort();
 
-    Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_10__["render"])(this._movieListContainer, this._mainFilmsSectionComponent, _utils_render_js__WEBPACK_IMPORTED_MODULE_10__["RenderPosition"].BEFOREEND);
-    Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_10__["render"])(this._mainFilmsSectionComponent, this._filmsListComponent, _utils_render_js__WEBPACK_IMPORTED_MODULE_10__["RenderPosition"].BEFOREEND);
-    Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_10__["render"])(this._filmsListComponent, this._filmsListContainerComponent, _utils_render_js__WEBPACK_IMPORTED_MODULE_10__["RenderPosition"].BEFOREEND);
+    Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_11__["render"])(this._movieListContainer, this._mainFilmsSectionComponent, _utils_render_js__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
+    Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_11__["render"])(this._mainFilmsSectionComponent, this._filmsListComponent, _utils_render_js__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
+    Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_11__["render"])(this._filmsListComponent, this._filmsListContainerComponent, _utils_render_js__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
 
     this._renderFilmsList();
+    this._renderExtras();
   }
 
   _handleFilmChange(updatedFilm) {
@@ -522,7 +525,7 @@ class MovieList {
   }
 
   _renderSort() {
-    Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_10__["render"])(this._movieListContainer, this._mainSortingFilterComponent, _utils_render_js__WEBPACK_IMPORTED_MODULE_10__["RenderPosition"].BEFOREEND);
+    Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_11__["render"])(this._movieListContainer, this._mainSortingFilterComponent, _utils_render_js__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
     this._mainSortingFilterComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
 
     this._mainSortingFilterComponent.setSortActiveChangeHandler((evt) => {
@@ -545,7 +548,7 @@ class MovieList {
   }
 
   _renderNoFilms() {
-    Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_10__["render"])(this._filmsListComponent, this._noFilmsComponent, _utils_render_js__WEBPACK_IMPORTED_MODULE_10__["RenderPosition"].BEFOREEND);
+    Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_11__["render"])(this._filmsListComponent, this._noFilmsComponent, _utils_render_js__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
   }
 
   _handleShowMoreButtonClick() {
@@ -553,12 +556,12 @@ class MovieList {
     this._renderedFilmCount += _utils_const_js__WEBPACK_IMPORTED_MODULE_7__["FILM_COUNT_PER_STEP"];
 
     if (this._renderedFilmCount >= this._films.length) {
-      Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_10__["remove"])(this._showMoreButtonComponent);
+      Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_11__["remove"])(this._showMoreButtonComponent);
     }
   }
 
   _renderShowMoreButton() {
-    Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_10__["render"])(this._filmsListComponent, this._showMoreButtonComponent, _utils_render_js__WEBPACK_IMPORTED_MODULE_10__["RenderPosition"].BEFOREEND);
+    Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_11__["render"])(this._filmsListComponent, this._showMoreButtonComponent, _utils_render_js__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
     this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
   }
 
@@ -576,7 +579,7 @@ class MovieList {
     .forEach((presenter) => presenter.destroy());
 
     this._filmCardPresenter = {};
-    Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_10__["remove"])(this._showMoreButtonComponent);
+    Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_11__["remove"])(this._showMoreButtonComponent);
     this._renderedFilmCount = _utils_const_js__WEBPACK_IMPORTED_MODULE_7__["FILM_COUNT_PER_STEP"];
   }
 
@@ -614,34 +617,38 @@ class MovieList {
     this._renderFilmsItems();
   }
 
-  // _renderExtras() {
-  //   if (this._films.length > 0) {
-  //     const mostRated = this._films.slice().filter(() => {
+  _renderExtras() {
+    if (this._films.length > 0) {
+      const extraRatedList = new _view_films_list_extra_js__WEBPACK_IMPORTED_MODULE_10__["default"](_utils_const_js__WEBPACK_IMPORTED_MODULE_7__["EXTRAS_NAMES"][0]);
+      Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_11__["render"])(this._mainFilmsSectionComponent, extraRatedList, _utils_render_js__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
+      const extraRatedContainer = new _view_films_list_container__WEBPACK_IMPORTED_MODULE_3__["default"]();
+      Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_11__["render"])(extraRatedList, extraRatedContainer, _utils_render_js__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
 
-  //     })
+      const ratedList = this._films.slice().sort(_utils_film_js__WEBPACK_IMPORTED_MODULE_8__["sortFilmRating"]);
+      const mostRated = ratedList.slice(0, _utils_const_js__WEBPACK_IMPORTED_MODULE_7__["EXTRAS_NUMBER"]);
+      mostRated.forEach((film) => {
+        const filmCardPresenter = new _film_card_js__WEBPACK_IMPORTED_MODULE_4__["default"](extraRatedContainer, this._handleFilmChange);
+        filmCardPresenter.init(film);
+        this._filmCardPresenterExtra[film.id] = filmCardPresenter;
+      });
 
-  //     const extraRated = new FilmsListExtra(EXTRAS_NAMES[0]);
-  //     render(this._movieListContainer, extraRated, RenderPosition.BEFOREEND);
-  //     const extraRatedContainer = new FilmsListContainer();
-  //     render(extraRated, extraRatedContainer, RenderPosition.BEFOREEND);
 
+      const mostWatchedList = this._films.slice().filter((film) => film.isWatched);
+      if (mostWatchedList.length > 0) {
+        const extraWatchedList = new _view_films_list_extra_js__WEBPACK_IMPORTED_MODULE_10__["default"](_utils_const_js__WEBPACK_IMPORTED_MODULE_7__["EXTRAS_NAMES"][1]);
+        Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_11__["render"])(this._mainFilmsSectionComponent, extraWatchedList, _utils_render_js__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
+        const extraWatchedContainer = new _view_films_list_container__WEBPACK_IMPORTED_MODULE_3__["default"]();
+        Object(_utils_render_js__WEBPACK_IMPORTED_MODULE_11__["render"])(extraWatchedList, extraWatchedContainer, _utils_render_js__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
 
-  //     // const extraWatched = new FilmsListExtra(EXTRAS_NAMES[1]);
-
-  //     // render(this._movieListContainer, extraWatched, RenderPosition.BEFOREEND);
-
-  //     // const filmsListsExtra = this._movieListContainer.querySelectorAll(`.films-list--extra`);
-
-  //     // for (const filmsListExtra of filmsListsExtra) {
-  //     //   render(filmsListExtra, new FilmsListContainer(), RenderPosition.BEFOREEND);
-  //     //   const extraContainer = filmsListExtra.querySelector(`.films-list__container`);
-  //     //   for (let i = 0; i < EXTRAS_NUMBER; i++) {
-  //     //     const randomIndex = getRandomIndex(films);
-  //     //     renderFilm(extraContainer, this._films[randomIndex]);
-  //     //   }
-  //     // }
-  //   }
-  // }
+        const mostWatched = mostWatchedList.slice(0, _utils_const_js__WEBPACK_IMPORTED_MODULE_7__["EXTRAS_NUMBER"]);
+        mostWatched.forEach((film) => {
+          const filmCardPresenter = new _film_card_js__WEBPACK_IMPORTED_MODULE_4__["default"](extraWatchedContainer, this._handleFilmChange);
+          filmCardPresenter.init(film);
+          this._filmCardPresenterExtra[film.id] = filmCardPresenter;
+        });
+      }
+    }
+  }
 }
 
 
@@ -1462,6 +1469,41 @@ const createFilmsListContainer = () => {
 class FilmsListContainer extends _abstract_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
   getTemplate() {
     return createFilmsListContainer();
+  }
+}
+
+
+/***/ }),
+
+/***/ "./src/view/films-list-extra.js":
+/*!**************************************!*\
+  !*** ./src/view/films-list-extra.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return FilmsListExtra; });
+/* harmony import */ var _abstract_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract.js */ "./src/view/abstract.js");
+
+
+const createFilmsListExtra = (name) => {
+  return (
+    `<section class="films-list--extra" name="${name}">
+      <h2 class="films-list__title">${name}</h2>
+    </section>`
+  );
+};
+
+class FilmsListExtra extends _abstract_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  constructor(name) {
+    super();
+    this.name = name;
+  }
+
+  getTemplate() {
+    return createFilmsListExtra(this.name);
   }
 }
 
